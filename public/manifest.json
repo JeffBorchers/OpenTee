@@ -1,0 +1,25 @@
+{
+  "name": "OpenTee",
+  "short_name": "OpenTee",
+  "description": "Your open-source tee time and practice bay booking software",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a3a2a",
+  "theme_color": "#1a3a2a",
+  "icons": [
+    {
+      "src": "/logos/opentee-final-logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "/logos/opentee-final-logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ],
+  "categories": ["sports", "lifestyle"],
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en-US"
+}

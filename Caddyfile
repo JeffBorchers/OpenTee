@@ -1,0 +1,3 @@
+opentee.dev {
+    reverse_proxy localhost:3458
+}

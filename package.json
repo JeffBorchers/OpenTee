@@ -1,0 +1,23 @@
+{
+  "name": "opentee",
+  "version": "1.0.0",
+  "description": "Open-source tee time monitoring and booking intelligence for golfers",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "golf",
+    "tee-time",
+    "booking",
+    "monitoring",
+    "automation",
+    "open-source"
+  ],
+  "author": "OpenTee",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
