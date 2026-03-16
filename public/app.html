@@ -214,111 +214,105 @@
       margin-top: 4px;
     }
     
-    .upcoming-booking {
+    /* Monitor Control Card */
+    .monitor-control {
       background: linear-gradient(135deg, rgba(197, 165, 90, 0.15) 0%, rgba(45, 90, 63, 0.3) 100%);
       border: 1px solid rgba(197, 165, 90, 0.3);
-      border-radius: 12px;
-      padding: 16px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-    
-    .booking-date {
-      text-align: center;
-      min-width: 56px;
-    }
-    
-    .booking-day {
-      font-size: 24px;
-      font-weight: 800;
-      color: #C5A55A;
-    }
-    
-    .booking-month {
-      font-size: 11px;
-      color: rgba(255, 255, 255, 0.6);
-      text-transform: uppercase;
-    }
-    
-    .booking-details h4 {
-      font-size: 15px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-    
-    .booking-details p {
-      font-size: 13px;
-      color: rgba(255, 255, 255, 0.6);
-    }
-    
-    .no-bookings {
-      text-align: center;
-      padding: 32px 20px;
-      color: rgba(255, 255, 255, 0.5);
-    }
-    
-    .no-bookings svg {
-      width: 48px;
-      height: 48px;
-      margin-bottom: 12px;
-      opacity: 0.3;
-    }
-    
-    /* Activity Feed */
-    .activity-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    
-    .activity-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 12px;
-      background: rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-    }
-    
-    .activity-icon {
-      width: 32px;
-      height: 32px;
-      background: rgba(197, 165, 90, 0.2);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    
-    .activity-icon svg {
-      width: 16px;
-      height: 16px;
-      stroke: #C5A55A;
-    }
-    
-    .activity-content {
-      flex: 1;
-    }
-    
-    .activity-message {
-      font-size: 14px;
-      margin-bottom: 2px;
-    }
-    
-    .activity-time {
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.4);
-    }
-    
-    /* Monitor Setup */
-    .section-title {
-      font-size: 18px;
-      font-weight: 700;
+      border-radius: 16px;
+      padding: 20px;
       margin-bottom: 16px;
     }
     
+    .monitor-control-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    
+    .monitor-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .monitor-status-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #4ade80;
+      animation: pulse 2s infinite;
+    }
+    
+    .monitor-status-dot.stopped {
+      background: rgba(255, 255, 255, 0.3);
+      animation: none;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    .monitor-mode {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-top: 4px;
+    }
+    
+    .monitor-btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+    }
+    
+    .monitor-btn.start {
+      background: #C5A55A;
+      color: #0f2419;
+    }
+    
+    .monitor-btn.start:hover {
+      background: #d4b76a;
+    }
+    
+    .monitor-btn.stop {
+      background: rgba(248, 113, 113, 0.2);
+      border: 1px solid rgba(248, 113, 113, 0.3);
+      color: #f87171;
+    }
+    
+    .monitor-btn.stop:hover {
+      background: rgba(248, 113, 113, 0.3);
+    }
+    
+    .monitor-info {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      font-size: 13px;
+    }
+    
+    .monitor-info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    
+    .monitor-info-label {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 11px;
+    }
+    
+    .monitor-info-value {
+      color: #fff;
+      font-weight: 500;
+    }
+    
+    /* Form Elements */
     .form-group {
       margin-bottom: 24px;
     }
@@ -329,6 +323,23 @@
       font-weight: 500;
       margin-bottom: 10px;
       color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 15px;
+      font-family: inherit;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(197, 165, 90, 0.2);
+      border-radius: 8px;
+      color: #fff;
+      outline: none;
+      box-sizing: border-box;
+    }
+    
+    .form-input:focus {
+      border-color: #C5A55A;
     }
     
     .form-select {
@@ -346,6 +357,7 @@
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.5)' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: right 12px center;
+      box-sizing: border-box;
     }
     
     .form-select:focus {
@@ -355,6 +367,56 @@
     .form-select option {
       background: #1a3a2a;
       color: #fff;
+    }
+    
+    .form-hint {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 8px;
+    }
+    
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+    }
+    
+    .btn-primary {
+      background: #C5A55A;
+      color: #0f2419;
+    }
+    
+    .btn-primary:hover {
+      background: #d4b76a;
+    }
+    
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(197, 165, 90, 0.2);
+      color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+    
+    .btn-block {
+      width: 100%;
+      box-sizing: border-box;
+    }
+    
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
     
     /* Day/Time Grid */
@@ -492,6 +554,56 @@
       color: #C5A55A;
     }
     
+    /* Credentials Section */
+    .credentials-section {
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    
+    .credentials-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    
+    .credentials-icon {
+      width: 36px;
+      height: 36px;
+      background: rgba(197, 165, 90, 0.2);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .credentials-icon svg {
+      width: 18px;
+      height: 18px;
+      stroke: #C5A55A;
+    }
+    
+    .credentials-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+    
+    .credentials-saved {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #4ade80;
+      margin-top: 8px;
+    }
+    
+    .credentials-saved svg {
+      width: 14px;
+      height: 14px;
+    }
+    
     /* Bookings Tab */
     .booking-tabs {
       display: flex;
@@ -553,6 +665,11 @@
     .booking-status.confirmed {
       background: rgba(74, 222, 128, 0.2);
       color: #4ade80;
+    }
+    
+    .booking-status.available {
+      background: rgba(197, 165, 90, 0.2);
+      color: #C5A55A;
     }
     
     .booking-status.cancelled {
@@ -673,6 +790,155 @@
       margin-top: 16px;
     }
     
+    /* Activity Feed */
+    .activity-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .activity-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+    
+    .activity-icon {
+      width: 32px;
+      height: 32px;
+      background: rgba(197, 165, 90, 0.2);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .activity-icon svg {
+      width: 16px;
+      height: 16px;
+      stroke: #C5A55A;
+    }
+    
+    .activity-content {
+      flex: 1;
+    }
+    
+    .activity-message {
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+    
+    .activity-time {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.4);
+    }
+    
+    /* Setup Wizard */
+    .setup-wizard {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, #1a3a2a 0%, #0f2419 100%);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .setup-wizard.hidden {
+      display: none;
+    }
+    
+    .setup-card {
+      background: rgba(45, 90, 63, 0.3);
+      border: 1px solid rgba(197, 165, 90, 0.2);
+      border-radius: 20px;
+      padding: 32px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+    
+    .setup-logo {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+    }
+    
+    .setup-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    
+    .setup-subtitle {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 32px;
+    }
+    
+    .setup-step {
+      display: none;
+    }
+    
+    .setup-step.active {
+      display: block;
+    }
+    
+    .setup-progress {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    
+    .setup-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .setup-title .active {
+      background: #C5A55A;
+    }
+    
+    .setup-subtitle {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+    
+    .setup-steps {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    
+    .setup-step-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .setup-step-dot.active {
+      background: #C5A55A;
+    }
+    
+    .setup-step-dot.completed {
+      background: #4ade80;
+    }
+    
     /* Toast */
     .toast {
       position: fixed;
@@ -789,9 +1055,152 @@
       border: 1px solid rgba(248, 113, 113, 0.3);
       color: #f87171;
     }
+    
+    /* No bookings placeholder */
+    .no-bookings {
+      text-align: center;
+      padding: 32px 20px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .no-bookings svg {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 12px;
+      opacity: 0.3;
+    }
+    
+    /* Upcoming booking */
+    .upcoming-booking {
+      background: linear-gradient(135deg, rgba(197, 165, 90, 0.15) 0%, rgba(45, 90, 63, 0.3) 100%);
+      border: 1px solid rgba(197, 165, 90, 0.3);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
+    .booking-date {
+      text-align: center;
+      min-width: 56px;
+    }
+    
+    .booking-day {
+      font-size: 24px;
+      font-weight: 800;
+      color: #C5A55A;
+    }
+    
+    .booking-month {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.6);
+      text-transform: uppercase;
+    }
+    
+    .booking-details h4 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    
+    .booking-details p {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
   </style>
 </head>
 <body>
+  <!-- Setup Wizard (shown for new users) -->
+  <div class="setup-wizard hidden" id="setup-wizard">
+    <div class="setup-card">
+      <img src="/logos/opentee-final-logo.jpg" alt="OpenTee" class="setup-logo">
+      <h1 class="setup-title">Welcome to OpenTee</h1>
+      <p class="setup-subtitle">Let's set up your slot monitor. This takes about 2 minutes.</p>
+      
+      <div class="setup-steps" id="setup-steps">
+        <div class="setup-step-dot active" data-step="1"></div>
+        <div class="setup-step-dot" data-step="2"></div>
+        <div class="setup-step-dot" data-step="3"></div>
+        <div class="setup-step-dot" data-step="4"></div>
+      </div>
+      
+      <!-- Step 1: Store -->
+      <div class="setup-step" id="setup-step-1">
+        <h2 style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">Pick Your Store</h2>
+        <div class="form-group">
+          <select class="form-select" id="setup-store">
+            <option value="">Choose a store...</option>
+          </select>
+        </div>
+        <button class="btn btn-primary btn-block" id="setup-next-1">Next</button>
+      </div>
+      
+      <!-- Step 2: Days -->
+      <div class="setup-step hidden" id="setup-step-2">
+        <h2 style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">Preferred Days</h2>
+        <div class="day-grid" id="setup-days">
+          <button type="button" class="day-btn" data-day="mon">Mon</button>
+          <button type="button" class="day-btn" data-day="tue">Tue</button>
+          <button type="button" class="day-btn" data-day="wed">Wed</button>
+          <button type="button" class="day-btn" data-day="thu">Thu</button>
+          <button type="button" class="day-btn" data-day="fri">Fri</button>
+          <button type="button" class="day-btn" data-day="sat">Sat</button>
+          <button type="button" class="day-btn" data-day="sun">Sun</button>
+        </div>
+        <button class="btn btn-primary btn-block" id="setup-next-2">Next</button>
+      </div>
+      
+      <!-- Step 3: Times -->
+      <div class="setup-step hidden" id="setup-step-3">
+        <h2 style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">Preferred Times</h2>
+        <div class="time-grid" id="setup-times">
+          <button type="button" class="time-btn" data-time="6am">6 AM</button>
+          <button type="button" class="time-btn" data-time="7am">7 AM</button>
+          <button type="button" class="time-btn" data-time="8am">8 AM</button>
+          <button type="button" class="time-btn" data-time="9am">9 AM</button>
+          <button type="button" class="time-btn" data-time="10am">10 AM</button>
+          <button type="button" class="time-btn" data-time="11am">11 AM</button>
+          <button type="button" class="time-btn" data-time="12pm">12 PM</button>
+          <button type="button" class="time-btn" data-time="1pm">1 PM</button>
+          <button type="button" class="time-btn" data-time="2pm">2 PM</button>
+          <button type="button" class="time-btn" data-time="3pm">3 PM</button>
+          <button type="button" class="time-btn" data-time="4pm">4 PM</button>
+          <button type="button" class="time-btn" data-time="5pm">5 PM</button>
+          <button type="button" class="time-btn" data-time="6pm">6 PM</button>
+          <button type="button" class="time-btn" data-time="7pm">7 PM</button>
+          <button type="button" class="time-btn" data-time="8pm">8 PM</button>
+          <button type="button" class="time-btn" data-time="9pm">9 PM</button>
+        </div>
+        <button class="btn btn-primary btn-block" style="margin-top: 16px;" id="setup-next-3">Next</button>
+      </div>
+      
+      <!-- Step 4: Credentials -->
+      <div class="setup-step hidden" id="setup-step-4">
+        <h2 style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">USchedule Account</h2>
+        <p style="font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 16px;">
+          Enter your PGA Tour Superstore login. This is used to check availability.
+        </p>
+        <div class="form-group">
+          <input type="email" class="form-input" id="setup-email" placeholder="Email">
+        </div>
+        <div class="form-group">
+          <input type="password" class="form-input" id="setup-password" placeholder="Password">
+        </div>
+        <p class="form-hint" style="margin-bottom: 16px;">
+          🔒 Your credentials are encrypted and never leave your machine.
+        </p>
+        <button class="btn btn-primary btn-block" id="setup-finish">Start Monitoring</button>
+      </div>
+    </div>
+  </div>
+
   <!-- App Header -->
   <header class="app-header">
     <div class="app-header-left">
@@ -800,7 +1209,7 @@
     </div>
     <div class="status-indicator">
       <span class="status-dot" id="status-dot"></span>
-      <span id="status-text">Monitoring</span>
+      <span id="status-text">Inactive</span>
     </div>
   </header>
 
@@ -811,29 +1220,38 @@
       <p class="welcome-subtext">Here's your tee time overview</p>
     </div>
     
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-value" id="stat-bookings">0</div>
-        <div class="stat-label">Total Bookings</div>
+    <!-- Monitor Control Card -->
+    <div class="monitor-control">
+      <div class="monitor-control-header">
+        <div class="monitor-status">
+          <span class="monitor-status-dot stopped" id="monitor-dot"></span>
+          <div>
+            <div style="font-weight: 600;" id="monitor-status-text">Monitor Stopped</div>
+            <div class="monitor-mode" id="monitor-mode">Not monitoring</div>
+          </div>
+        </div>
+        <button class="monitor-btn start" id="monitor-toggle-btn">Start</button>
       </div>
-      <div class="stat-card">
-        <div class="stat-value" id="stat-monitors">0</div>
-        <div class="stat-label">Active Monitors</div>
+      <div class="monitor-info">
+        <div class="monitor-info-item">
+          <span class="monitor-info-label">Last Check</span>
+          <span class="monitor-info-value" id="monitor-last-check">-</span>
+        </div>
+        <div class="monitor-info-item">
+          <span class="monitor-info-label">Slots Found</span>
+          <span class="monitor-info-value" id="monitor-slots-found">0</span>
+        </div>
       </div>
     </div>
     
-    <div class="card">
-      <div class="card-header">
-        <h3 class="card-title">Next Booking</h3>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value" id="stat-bookings">0</div>
+        <div class="stat-label">Available Slots</div>
       </div>
-      <div id="next-booking">
-        <div class="no-bookings">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/>
-          </svg>
-          <p>No upcoming bookings</p>
-          <p style="font-size: 12px; margin-top: 4px;">Set up monitors to get notified</p>
-        </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-monitors">0</div>
+        <div class="stat-label">Store</div>
       </div>
     </div>
     
@@ -922,8 +1340,8 @@
     <h2 class="section-title">Bookings</h2>
     
     <div class="booking-tabs">
-      <button class="booking-tab-btn active" data-tab="upcoming">Upcoming</button>
-      <button class="booking-tab-btn" data-tab="past">Past</button>
+      <button class="booking-tab-btn active" data-tab="available">Available</button>
+      <button class="booking-tab-btn" data-tab="booked">Booked</button>
     </div>
     
     <div id="bookings-list" class="booking-list">
@@ -939,6 +1357,57 @@
   <!-- Tab: Settings -->
   <div class="tab-content" id="tab-settings">
     <h2 class="section-title">Settings</h2>
+    
+    <!-- USchedule Credentials -->
+    <div class="credentials-section">
+      <div class="credentials-header">
+        <div class="credentials-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="credentials-title">USchedule Account</div>
+          <div style="font-size: 12px; color: rgba(255,255,255,0.5);">PGA Tour Superstore login</div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <input type="email" class="form-input" id="cred-email" placeholder="Email">
+      </div>
+      <div class="form-group">
+        <input type="password" class="form-input" id="cred-password" placeholder="Password">
+      </div>
+      <p class="form-hint">🔒 Your credentials are encrypted and never leave your machine.</p>
+      
+      <div style="display: flex; gap: 12px; margin-top: 16px;">
+        <button class="btn btn-secondary" style="flex: 1;" id="test-creds-btn">Test</button>
+        <button class="btn btn-primary" style="flex: 1;" id="save-creds-btn">Save</button>
+      </div>
+      
+      <div id="credentials-form">
+        <div class="form-group" style="margin-bottom: 12px;">
+          <input type="email" class="form-input" id="uschedule-email" placeholder="USchedule Email">
+        </div>
+        <div class="form-group" style="margin-bottom: 12px;">
+          <input type="password" class="form-input" id="uschedule-password" placeholder="USchedule Password">
+        </div>
+        <p class="form-hint" style="margin-bottom: 12px;">
+          🔒 Your credentials are encrypted and never leave your machine.
+        </p>
+        <div style="display: flex; gap: 12px;">
+          <button class="btn btn-primary" style="flex: 1;" id="save-credentials">Save</button>
+          <button class="btn btn-secondary" id="test-credentials">Test</button>
+        </div>
+      </div>
+      
+      <div id="credentials-saved" class="credentials-saved hidden">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        Credentials saved securely
+      </div>
+    </div>
     
     <div class="settings-section">
       <h3 class="settings-title">Account</h3>
@@ -980,7 +1449,7 @@
     
     <button class="logout-btn" id="logout-btn">Log Out</button>
     
-    <p class="app-version">OpenTee v1.0.0</p>
+    <p class="app-version">OpenTee v1.1.0</p>
   </div>
 
   <!-- Bottom Navigation -->
@@ -1082,6 +1551,8 @@
     let preferences = {};
     let bookings = [];
     let activities = [];
+    let monitorStatus = { running: false };
+    let credentialsStatus = { saved: false };
     
     async function loadUserData() {
       try {
@@ -1100,12 +1571,23 @@
     async function loadStores() {
       try {
         stores = await api('/api/stores');
+        
+        // Populate main store selector
         const select = document.getElementById('store-select');
         stores.forEach(store => {
           const option = document.createElement('option');
           option.value = store.id;
-          option.textContent = `${store.name} - ${store.address}`;
+          option.textContent = `${store.name}`;
           select.appendChild(option);
+        });
+        
+        // Populate setup wizard store selector
+        const setupSelect = document.getElementById('setup-store');
+        stores.forEach(store => {
+          const option = document.createElement('option');
+          option.value = store.id;
+          option.textContent = `${store.name} - ${store.address}`;
+          setupSelect.appendChild(option);
         });
       } catch (err) {
         console.error('Failed to load stores:', err);
@@ -1119,10 +1601,11 @@
         // Update UI
         if (preferences.stores && preferences.stores.length > 0) {
           document.getElementById('store-select').value = preferences.stores[0];
+          document.getElementById('stat-monitors').textContent = stores.find(s => s.id === preferences.stores[0])?.name || '-';
         }
         
         if (preferences.days) {
-          document.querySelectorAll('.day-btn').forEach(btn => {
+          document.querySelectorAll('#tab-monitor .day-btn').forEach(btn => {
             if (preferences.days.includes(btn.dataset.day)) {
               btn.classList.add('active');
             }
@@ -1130,7 +1613,7 @@
         }
         
         if (preferences.times) {
-          document.querySelectorAll('.time-btn').forEach(btn => {
+          document.querySelectorAll('#tab-monitor .time-btn').forEach(btn => {
             if (preferences.times.includes(btn.dataset.time)) {
               btn.classList.add('active');
             }
@@ -1139,7 +1622,7 @@
         
         document.getElementById('back-to-back').checked = preferences.backToBack || false;
         
-        document.querySelectorAll('.alert-option').forEach(opt => {
+        document.querySelectorAll('#tab-monitor .alert-option').forEach(opt => {
           opt.classList.toggle('active', opt.dataset.method === (preferences.alertMethod || 'email'));
         });
         
@@ -1149,32 +1632,85 @@
       }
     }
     
+    async function loadCredentialsStatus() {
+      try {
+        credentialsStatus = await api('/api/credentials/status') || { saved: false };
+        
+        if (credentialsStatus.saved) {
+          document.getElementById('credentials-form').classList.add('hidden');
+          document.getElementById('credentials-saved').classList.remove('hidden');
+        }
+      } catch (err) {
+        console.error('Failed to load credentials status:', err);
+      }
+    }
+    
+    async function loadMonitorStatus() {
+      try {
+        monitorStatus = await api('/api/monitor/status') || { running: false };
+        updateMonitorUI();
+      } catch (err) {
+        console.error('Failed to load monitor status:', err);
+      }
+    }
+    
+    function updateMonitorUI() {
+      const dot = document.getElementById('monitor-dot');
+      const statusText = document.getElementById('monitor-status-text');
+      const modeEl = document.getElementById('monitor-mode');
+      const toggleBtn = document.getElementById('monitor-toggle-btn');
+      const lastCheckEl = document.getElementById('monitor-last-check');
+      const slotsFoundEl = document.getElementById('monitor-slots-found');
+      const statusDot = document.getElementById('status-dot');
+      const statusTextHeader = document.getElementById('status-text');
+      
+      if (monitorStatus.running) {
+        dot.classList.remove('stopped');
+        statusText.textContent = 'Monitor Active';
+        modeEl.textContent = getModeLabel(monitorStatus.mode);
+        toggleBtn.textContent = 'Stop';
+        toggleBtn.classList.remove('start');
+        toggleBtn.classList.add('stop');
+        statusDot.classList.remove('inactive');
+        statusTextHeader.textContent = 'Monitoring';
+      } else {
+        dot.classList.add('stopped');
+        statusText.textContent = 'Monitor Stopped';
+        modeEl.textContent = 'Not monitoring';
+        toggleBtn.textContent = 'Start';
+        toggleBtn.classList.add('start');
+        toggleBtn.classList.remove('stop');
+        statusDot.classList.add('inactive');
+        statusTextHeader.textContent = 'Inactive';
+      }
+      
+      lastCheckEl.textContent = monitorStatus.lastCheck ? formatTime(monitorStatus.lastCheck) : '-';
+      slotsFoundEl.textContent = monitorStatus.slotsFound || 0;
+    }
+    
+    function getModeLabel(mode) {
+      const labels = {
+        'drop-hunt': '🎯 Drop Hunt (1 min)',
+        'post-drop': '🔍 Post-Drop (5 min)',
+        'maintenance': '💤 Maintenance (30 min)',
+        'stopped': 'Not monitoring'
+      };
+      return labels[mode] || mode;
+    }
+    
+    function formatTime(isoString) {
+      const date = new Date(isoString);
+      return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+    }
+    
     async function loadBookings() {
       try {
         bookings = await api('/api/bookings') || [];
-        renderBookings('upcoming');
+        renderBookings('available');
         
         // Update stats
-        const upcoming = bookings.filter(b => b.status !== 'cancelled' && new Date(b.date) >= new Date());
-        document.getElementById('stat-bookings').textContent = bookings.length;
-        
-        // Next booking
-        if (upcoming.length > 0) {
-          const next = upcoming.sort((a, b) => new Date(a.date) - new Date(b.date))[0];
-          const date = new Date(next.date);
-          document.getElementById('next-booking').innerHTML = `
-            <div class="upcoming-booking">
-              <div class="booking-date">
-                <div class="booking-day">${date.getDate()}</div>
-                <div class="booking-month">${date.toLocaleString('default', { month: 'short' })}</div>
-              </div>
-              <div class="booking-details">
-                <h4>${next.storeName}</h4>
-                <p>${next.time} • Bay ${next.bay || 'TBD'}</p>
-              </div>
-            </div>
-          `;
-        }
+        const available = bookings.filter(b => b.status === 'available');
+        document.getElementById('stat-bookings').textContent = available.length;
       } catch (err) {
         console.error('Failed to load bookings:', err);
       }
@@ -1190,13 +1726,12 @@
     }
     
     function renderBookings(tab) {
-      const now = new Date();
       let filtered = bookings;
       
-      if (tab === 'upcoming') {
-        filtered = bookings.filter(b => b.status !== 'cancelled' && new Date(b.date) >= now);
+      if (tab === 'available') {
+        filtered = bookings.filter(b => b.status === 'available');
       } else {
-        filtered = bookings.filter(b => b.status === 'cancelled' || new Date(b.date) < now);
+        filtered = bookings.filter(b => b.status !== 'available');
       }
       
       const list = document.getElementById('bookings-list');
@@ -1207,23 +1742,24 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
               <path d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/>
             </svg>
-            <p>No ${tab} bookings</p>
+            <p>No ${tab} slots</p>
           </div>
         `;
         return;
       }
       
       list.innerHTML = filtered.map(booking => {
-        const date = new Date(booking.date);
-        const statusClass = booking.status === 'cancelled' ? 'cancelled' : 
-                           date < now ? 'completed' : 'confirmed';
-        const statusText = booking.status === 'cancelled' ? 'Cancelled' : 
-                          date < now ? 'Completed' : 'Confirmed';
+        const statusClass = booking.status === 'available' ? 'available' : 
+                           booking.status === 'cancelled' ? 'cancelled' : 
+                           booking.status === 'confirmed' ? 'confirmed' : 'completed';
+        const statusText = booking.status === 'available' ? 'Available' : 
+                          booking.status === 'cancelled' ? 'Cancelled' : 
+                          booking.status === 'confirmed' ? 'Confirmed' : 'Completed';
         
         return `
           <div class="booking-card">
             <div class="booking-card-header">
-              <span class="booking-store">${booking.storeName}</span>
+              <span class="booking-store">${booking.storeName || 'Store'}</span>
               <span class="booking-status ${statusClass}">${statusText}</span>
             </div>
             <div class="booking-card-details">
@@ -1231,26 +1767,26 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                   <path d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25"/>
                 </svg>
-                <span>${date.toLocaleDateString()}</span>
+                <span>${booking.dateText || booking.date}</span>
               </div>
               <div class="booking-card-detail">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                   <path d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
-                <span>${booking.time}</span>
+                <span>${booking.time || ''}</span>
               </div>
             </div>
-            ${statusClass === 'confirmed' ? `
-              <button class="cancel-btn" data-id="${booking.id}">Cancel Booking</button>
+            ${statusClass === 'available' ? `
+              <a href="https://clients.uschedule.com/${stores.find(s => s.name === booking.storeName)?.alias || 'pgatsnovi'}/booking" 
+                 target="_blank" 
+                 class="btn btn-primary" 
+                 style="display: inline-block; text-decoration: none; padding: 8px 16px; font-size: 13px;">
+                Book Now
+              </a>
             ` : ''}
           </div>
         `;
       }).join('');
-      
-      // Add cancel handlers
-      list.querySelectorAll('.cancel-btn').forEach(btn => {
-        btn.addEventListener('click', () => showCancelModal(btn.dataset.id));
-      });
     }
     
     function renderActivity() {
@@ -1296,24 +1832,118 @@
     
     function updateMonitoringStatus() {
       const hasPreferences = preferences.stores && preferences.stores.length > 0;
-      const dot = document.getElementById('status-dot');
-      const text = document.getElementById('status-text');
-      
-      dot.classList.toggle('inactive', !hasPreferences);
-      text.textContent = hasPreferences ? 'Monitoring' : 'Inactive';
-      
-      document.getElementById('stat-monitors').textContent = hasPreferences ? preferences.stores.length : 0;
+      const hasCredentials = credentialsStatus.saved;
     }
     
-    // Day/Time button toggles
-    document.querySelectorAll('.day-btn, .time-btn').forEach(btn => {
+    // Setup Wizard
+    async function checkSetupWizard() {
+      const hasPreferences = preferences.stores && preferences.stores.length > 0;
+      const hasCredentials = credentialsStatus.saved;
+      
+      if (!hasPreferences || !hasCredentials) {
+        document.getElementById('setup-wizard').classList.remove('hidden');
+      }
+    }
+    
+    let currentSetupStep = 1;
+    
+    function showSetupStep(step) {
+      document.querySelectorAll('.setup-step').forEach(el => el.classList.add('hidden'));
+      document.getElementById(`setup-step-${step}`).classList.remove('hidden');
+      
+      document.querySelectorAll('.setup-step-dot').forEach(dot => {
+        const dotStep = parseInt(dot.dataset.step);
+        dot.classList.remove('active', 'completed');
+        if (dotStep < step) dot.classList.add('completed');
+        if (dotStep === step) dot.classList.add('active');
+      });
+      
+      currentSetupStep = step;
+    }
+    
+    // Setup wizard event handlers
+    document.getElementById('setup-next-1').addEventListener('click', () => {
+      const storeId = document.getElementById('setup-store').value;
+      if (!storeId) {
+        showToast('Please select a store', true);
+        return;
+      }
+      showSetupStep(2);
+    });
+    
+    document.getElementById('setup-next-2').addEventListener('click', () => {
+      const days = [...document.querySelectorAll('#setup-days .day-btn.active')].map(b => b.dataset.day);
+      if (days.length === 0) {
+        showToast('Please select at least one day', true);
+        return;
+      }
+      showSetupStep(3);
+    });
+    
+    document.getElementById('setup-next-3').addEventListener('click', () => {
+      const times = [...document.querySelectorAll('#setup-times .time-btn.active')].map(b => b.dataset.time);
+      if (times.length === 0) {
+        showToast('Please select at least one time', true);
+        return;
+      }
+      showSetupStep(4);
+    });
+    
+    document.getElementById('setup-finish').addEventListener('click', async () => {
+      const email = document.getElementById('setup-email').value;
+      const password = document.getElementById('setup-password').value;
+      
+      if (!email || !password) {
+        showToast('Please enter your credentials', true);
+        return;
+      }
+      
+      // Save preferences
+      const storeId = document.getElementById('setup-store').value;
+      const days = [...document.querySelectorAll('#setup-days .day-btn.active')].map(b => b.dataset.day);
+      const times = [...document.querySelectorAll('#setup-times .time-btn.active')].map(b => b.dataset.time);
+      
+      const prefResult = await api('/api/preferences', {
+        method: 'POST',
+        body: JSON.stringify({
+          stores: [storeId],
+          days,
+          times,
+          backToBack: false,
+          alertMethod: 'email'
+        })
+      });
+      
+      // Save credentials
+      const credResult = await api('/api/credentials/save', {
+        method: 'POST',
+        body: JSON.stringify({ email, password })
+      });
+      
+      if (prefResult?.success && credResult?.success) {
+        document.getElementById('setup-wizard').classList.add('hidden');
+        showToast('Setup complete! Start monitoring to find slots.');
+        await loadPreferences();
+        await loadCredentialsStatus();
+      } else {
+        showToast('Failed to save settings', true);
+      }
+    });
+    
+    // Setup day/time toggles
+    document.querySelectorAll('#setup-days .day-btn, #setup-times .time-btn').forEach(btn => {
+      btn.addEventListener('click', () => btn.classList.toggle('active'));
+    });
+    
+    // Day/Time button toggles in Monitor tab
+    document.querySelectorAll('#tab-monitor .day-btn, #tab-monitor .time-btn').forEach(btn => {
       btn.addEventListener('click', () => btn.classList.toggle('active'));
     });
     
     // Alert options
-    document.querySelectorAll('.alert-option').forEach(opt => {
+    document.querySelectorAll('#tab-monitor .alert-option').forEach(opt => {
       opt.addEventListener('click', () => {
-        document.querySelectorAll('.alert-option').forEach(o => o.classList.remove('active'));
+        document.querySelectorAll('#tab-monitor .alert-option').forEach(o => o.classList.remove('active'));
         opt.classList.add('active');
       });
     });
@@ -1330,10 +1960,10 @@
     // Save preferences
     document.getElementById('save-preferences').addEventListener('click', async () => {
       const storeId = document.getElementById('store-select').value;
-      const days = [...document.querySelectorAll('.day-btn.active')].map(b => b.dataset.day);
-      const times = [...document.querySelectorAll('.time-btn.active')].map(b => b.dataset.time);
+      const days = [...document.querySelectorAll('#tab-monitor .day-btn.active')].map(b => b.dataset.day);
+      const times = [...document.querySelectorAll('#tab-monitor .time-btn.active')].map(b => b.dataset.time);
       const backToBack = document.getElementById('back-to-back').checked;
-      const alertMethod = document.querySelector('.alert-option.active').dataset.method;
+      const alertMethod = document.querySelector('#tab-monitor .alert-option.active').dataset.method;
       
       if (!storeId) {
         showToast('Please select a store', true);
@@ -1381,6 +2011,97 @@
       }
     });
     
+    // Monitor toggle
+    document.getElementById('monitor-toggle-btn').addEventListener('click', async () => {
+      const btn = document.getElementById('monitor-toggle-btn');
+      btn.disabled = true;
+      
+      try {
+        if (monitorStatus.running) {
+          const result = await api('/api/monitor/stop', { method: 'POST' });
+          if (result?.success) {
+            monitorStatus = { running: false };
+            updateMonitorUI();
+            showToast('Monitor stopped');
+          } else {
+            showToast(result?.error || 'Failed to stop', true);
+          }
+        } else {
+          const result = await api('/api/monitor/start', { method: 'POST' });
+          if (result?.success) {
+            monitorStatus = { running: true, mode: 'starting' };
+            updateMonitorUI();
+            showToast('Monitor started!');
+            // Refresh status after a moment
+            setTimeout(loadMonitorStatus, 2000);
+          } else {
+            showToast(result?.error || 'Failed to start', true);
+          }
+        }
+      } catch (err) {
+        showToast('Connection error', true);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+    
+    // Save credentials
+    document.getElementById('save-credentials').addEventListener('click', async () => {
+      const email = document.getElementById('uschedule-email').value;
+      const password = document.getElementById('uschedule-password').value;
+      
+      if (!email || !password) {
+        showToast('Please enter email and password', true);
+        return;
+      }
+      
+      const btn = document.getElementById('save-credentials');
+      btn.disabled = true;
+      btn.textContent = 'Saving...';
+      
+      try {
+        const result = await api('/api/credentials/save', {
+          method: 'POST',
+          body: JSON.stringify({ email, password })
+        });
+        
+        if (result?.success) {
+          credentialsStatus = { saved: true };
+          document.getElementById('credentials-form').classList.add('hidden');
+          document.getElementById('credentials-saved').classList.remove('hidden');
+          showToast('Credentials saved securely!');
+        } else {
+          showToast(result?.error || 'Failed to save', true);
+        }
+      } catch (err) {
+        showToast('Connection error', true);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Save';
+      }
+    });
+    
+    // Test credentials
+    document.getElementById('test-credentials').addEventListener('click', async () => {
+      const btn = document.getElementById('test-credentials');
+      btn.disabled = true;
+      btn.textContent = 'Testing...';
+      
+      try {
+        const result = await api('/api/credentials/test', { method: 'POST' });
+        if (result?.success) {
+          showToast('Credentials verified!');
+        } else {
+          showToast(result?.error || 'Test failed', true);
+        }
+      } catch (err) {
+        showToast('Connection error', true);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Test';
+      }
+    });
+    
     // Cancel modal
     let cancelBookingId = null;
     
@@ -1421,12 +2142,24 @@
       window.location.href = '/login.html';
     });
     
+    // Poll monitor status
+    setInterval(async () => {
+      if (monitorStatus.running) {
+        await loadMonitorStatus();
+      }
+    }, 10000);
+    
     // Initial load
-    loadUserData();
-    loadStores();
-    loadPreferences();
-    loadBookings();
-    loadActivity();
+    (async () => {
+      await loadUserData();
+      await loadStores();
+      await loadPreferences();
+      await loadCredentialsStatus();
+      await loadMonitorStatus();
+      await loadBookings();
+      await loadActivity();
+      await checkSetupWizard();
+    })();
   </script>
 </body>
 </html>

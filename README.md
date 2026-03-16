@@ -1,128 +1,180 @@
-# ⛳ OpenTee
+# OpenTee 🏌️
 
-**Open-source tee time monitoring and booking intelligence for golfers.**
+Your open-source tee time and practice bay booking software.
 
-Never miss a tee time again. Monitor availability 24/7 and get notified the moment your perfect slot opens up.
+## Quick Start (Self-Hosted)
 
----
+1. Clone the repo
+   ```bash
+   git clone https://github.com/JeffBorchers/OpenTee.git
+   cd OpenTee
+   npm install
+   ```
 
-## The 3 AM Problem
+2. Start the server
+   ```bash
+   npm start
+   ```
 
-Bays and tee times drop in the middle of the night, often 2 weeks out. Working adults can't compete with night owls and bots. By the time you check in the morning, the good times are already gone.
+3. Open http://localhost:3458 in your browser
 
-**OpenTee solves this.** We watch for you, 24/7. When your ideal tee time appears, you get notified instantly.
+4. Create an account and follow the setup wizard
+
+5. Enter your USchedule credentials (they stay on your machine)
+
+6. Pick your store, preferred days/times, and start monitoring
 
 ## How It Works
 
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│  Set your       │    │  OpenTee        │    │  Get notified   │
-│  preferences    │───▶│  monitors 24/7  │───▶│  instantly      │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-```
+OpenTee monitors your PGA Tour Superstore's booking system for available practice bay slots that match your preferences. When a slot opens up, you get alerted immediately.
 
-1. **Set Your Preferences** — Tell OpenTee your preferred days, times, and courses
-2. **OpenTee Watches 24/7** — Continuous monitoring for new openings and cancellations
-3. **Get Notified Instantly** — SMS or email the moment your slot appears
+### Monitoring Modes
+- **Drop Hunt** (2:45-3:30 AM EST): Checks every minute during the window when new slots typically appear
+- **Post-Drop** (3:30-8:00 AM EST): Checks every 5 minutes to catch any stragglers
+- **Maintenance** (rest of day): Checks every 30 minutes for cancellations
 
-## Features
+### Supported Stores
+- Novi, MI
+- Roseville, MN
+- Kennesaw, GA
+- Myrtle Beach, SC
+- Orlando, FL
+- Scottsdale, AZ
+- Frisco, TX
+- Westminster, CO
 
-- 🕐 **24/7 Monitoring** — Never miss a tee time drop, even at 3 AM
-- ⚡ **Instant Alerts** — SMS and email notifications the moment slots open
-- 🧠 **Smart Scheduling** — Learns your patterns and preferences over time
-- 🔓 **100% Open Source** — Deploy yourself, free forever
-- 📞 **Voice Booking** (coming soon) — Call courses automatically to secure your time
-- 🏌️ **Multi-Course Support** (coming soon) — Monitor multiple courses simultaneously
+> **Note:** Store service IDs are set to typical values. If your store uses different IDs, you can discover them by:
+> 1. Going to your store's booking page on USchedule
+> 2. Opening browser dev tools → Network tab
+> 3. Selecting "Practice Bays"
+> 4. Looking for the `changefield` request - the `service_type_id` and `service_id` will be in the payload
 
-## Self-Hosting
+## Self-Hosted vs Hosted
 
-### Quick Start
+| Feature | Self-Hosted (Free) | Hosted (Coming Soon) |
+|---------|-------------------|---------------------|
+| Price | Free forever | $2-5 per booking |
+| Setup | You run the server | We run it for you |
+| Credentials | Stay on your machine | Encrypted on our servers |
+| Updates | Manual (git pull) | Automatic |
+
+## Security
+
+- Your USchedule credentials are encrypted with AES-256-GCM
+- Credentials never leave your machine
+- All data is stored locally in JSON files
+- No external services or telemetry
+
+## API Endpoints
+
+### Authentication
+- `POST /api/auth/register` - Create account
+- `POST /api/auth/login` - Login
+- `GET /api/auth/me` - Get current user
+- `POST /api/auth/change-password` - Change password
+
+### Stores
+- `GET /api/stores` - List all supported stores
+
+### Preferences
+- `GET /api/preferences` - Get user preferences
+- `POST /api/preferences` - Save preferences
+
+### Credentials
+- `GET /api/credentials/status` - Check if credentials are saved
+- `POST /api/credentials/save` - Save USchedule credentials (encrypted)
+- `POST /api/credentials/test` - Test if credentials work
+
+### Monitor
+- `POST /api/monitor/start` - Start monitoring
+- `POST /api/monitor/stop` - Stop monitoring
+- `GET /api/monitor/status` - Get monitor status
+- `GET /api/monitor/logs` - Get recent monitor logs
+
+### Bookings
+- `GET /api/bookings` - Get user bookings
+- `POST /api/bookings/:id/cancel` - Cancel a booking
+
+### Activity
+- `GET /api/activity` - Get recent activity
+
+## Tech Stack
+- Node.js + Express
+- Vanilla JS (no framework)
+- JSON file storage
+- PWA (installable on phone)
+
+## Development
 
 ```bash
-# Clone the repository
-git clone https://github.com/opentee/opentee.git
-cd opentee
-
 # Install dependencies
 npm install
 
-# Start the server
-npm start
+# Start in development mode (with auto-reload)
+npx nodemon server.js
+
+# Run tests
+npm test
 ```
 
-OpenTee will be running at `http://localhost:3458`
+## Project Structure
 
-### Configuration
-
-Create a `.env` file in the project root:
-
-```env
-# Server
-PORT=3458
-
-# Admin token for waitlist access
-ADMIN_TOKEN=your-secure-token-here
-
-# Notification settings (coming soon)
-SMTP_HOST=smtp.example.com
-SMTP_USER=your-email@example.com
-SMTP_PASS=your-password
+```
+OpenTee/
+├── server.js           # Main Express server
+├── lib/
+│   ├── monitor.js      # USchedule monitoring engine
+│   └── stores.js       # Store configuration
+├── public/
+│   ├── app.html        # PWA dashboard
+│   ├── login.html      # Login/register page
+│   ├── index.html      # Landing page
+│   ├── style.css       # Shared styles
+│   └── manifest.json   # PWA manifest
+├── data/               # Local data storage (created on first run)
+│   ├── users.json
+│   ├── preferences.json
+│   ├── credentials.json
+│   ├── bookings.json
+│   └── activity.json
+└── package.json
 ```
 
-### Requirements
+## Adding New Stores
 
-- Node.js 18+
-- npm or yarn
+Edit `lib/stores.js` to add new stores:
 
-## Roadmap
+```javascript
+{
+  id: '1234',                    // Unique ID
+  name: 'City, State',           // Display name
+  address: 'Full address',       // Physical address
+  platform: 'uschedule',         // Platform (only uschedule supported)
+  alias: 'pgatscityname',        // USchedule URL alias
+  serviceTypeId: '10491',        // Practice Bays service type ID
+  serviceId: '43016'             // 60-min practice session ID
+}
+```
 
-### Phase 1 ✅
-- [x] Landing page with waitlist
-- [x] Project structure
-- [x] OpenTee branding
+## Troubleshooting
 
-### Phase 2 (In Progress)
-- [ ] Course monitoring module
-- [ ] Real-time availability checking
-- [ ] Notification system (email, SMS)
-- [ ] User dashboard
+### "No USchedule credentials saved"
+Go to Settings and enter your PGA Tour Superstore login credentials.
 
-### Phase 3
-- [ ] Multi-course support
-- [ ] Voice booking (automated calls)
-- [ ] Calendar integration
-- [ ] Group booking coordination
+### "No store selected"
+Go to the Monitor tab and select your preferred store.
 
-### Phase 4
-- [ ] Hosted cloud option
-- [ ] Usage-based pricing ($2-5 per successful booking)
-- [ ] Priority support
+### Monitor not finding slots
+- Check your preferred days and times match when slots might be available
+- Verify your store's service IDs are correct
+- Check the monitor logs in the API for detailed output
 
-## Pricing
-
-| Self-Hosted | Hosted Cloud |
-|-------------|--------------|
-| Free forever | $2-5 per successful booking |
-| Deploy on your hardware | We monitor, you book |
-| Your credentials stay local | No server setup required |
-
-## Privacy & Ethics
-
-OpenTee is designed with privacy in mind:
-
-- **Self-hosted option** — Your booking credentials never leave your machine
-- **No tracking** — We don't track usage on self-hosted instances
-- **Rate limiting** — Built-in protections to avoid overwhelming booking systems
-- **Fair use** — Designed to help golfers, not scalp slots
+### Session expires frequently
+The monitor automatically re-creates sessions, but if you're seeing frequent disconnects, try restarting the monitor.
 
 ## License
-
-MIT License — Use it, modify it, deploy it.
+MIT
 
 ---
 
-**Built by golfers, for golfers.**
-
-[Join the waitlist](https://opentee.io) · [View on GitHub](https://github.com/opentee/opentee)
-
-*Brought to you from Grand Rapids, MI*
+Built with ☕ for golfers who want more time on the range.

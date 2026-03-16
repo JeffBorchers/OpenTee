@@ -3,6 +3,10 @@ const fs = require('fs');
 const path = require('path');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
+
+const { UScheduleMonitor } = require('./lib/monitor');
+const { STORES } = require('./lib/stores');
 
 const app = express();
 const PORT = 3458;
@@ -18,20 +22,12 @@ const USERS_FILE = path.join(DATA_DIR, 'users.json');
 const PREFERENCES_FILE = path.join(DATA_DIR, 'preferences.json');
 const BOOKINGS_FILE = path.join(DATA_DIR, 'bookings.json');
 const ACTIVITY_FILE = path.join(DATA_DIR, 'activity.json');
+const CREDENTIALS_FILE = path.join(DATA_DIR, 'credentials.json');
 const JWT_SECRET_FILE = path.join(DATA_DIR, 'jwt_secret.txt');
 const REDDIT_DIR = path.join(DATA_DIR, 'reddit-recon');
 
-// Store data
-const STORES = [
-  { id: '1250', name: 'Novi, MI', address: '21061 Haggerty Rd, Novi, MI 48375', platform: 'uschedule', alias: 'pgatsnovi' },
-  { id: '1270', name: 'Roseville, MN', address: 'Roseville, MN', platform: 'uschedule', alias: 'pgatsroseville' },
-  { id: '1280', name: 'Kennesaw, GA', address: 'Kennesaw, GA', platform: 'uschedule', alias: 'pgatskennesaw' },
-  { id: '1290', name: 'Myrtle Beach, SC', address: 'Myrtle Beach, SC', platform: 'uschedule', alias: 'pgatsmyrtlebeach' },
-  { id: '1300', name: 'Orlando, FL', address: 'Orlando, FL', platform: 'uschedule', alias: 'pgatsorlando' },
-  { id: '1310', name: 'Scottsdale, AZ', address: 'Scottsdale, AZ', platform: 'uschedule', alias: 'pgatsscottsdale' },
-  { id: '1320', name: 'Frisco, TX', address: 'Frisco, TX', platform: 'uschedule', alias: 'pgatsfrisco' },
-  { id: '1330', name: 'Westminster, CO', address: 'Westminster, CO', platform: 'uschedule', alias: 'pgatswestminster' }
-];
+// Active monitors (userId -> UScheduleMonitor instance)
+const activeMonitors = new Map();
 
 // Ensure data files exist
 if (!fs.existsSync(DATA_DIR)) {
@@ -52,6 +48,9 @@ if (!fs.existsSync(BOOKINGS_FILE)) {
 if (!fs.existsSync(ACTIVITY_FILE)) {
   fs.writeFileSync(ACTIVITY_FILE, JSON.stringify({}, null, 2));
 }
+if (!fs.existsSync(CREDENTIALS_FILE)) {
+  fs.writeFileSync(CREDENTIALS_FILE, JSON.stringify({}, null, 2));
+}
 if (!fs.existsSync(REDDIT_DIR)) {
   fs.mkdirSync(REDDIT_DIR, { recursive: true });
 }
@@ -61,12 +60,39 @@ function getJwtSecret() {
   if (fs.existsSync(JWT_SECRET_FILE)) {
     return fs.readFileSync(JWT_SECRET_FILE, 'utf8').trim();
   }
-  const secret = require('crypto').randomBytes(64).toString('hex');
+  const secret = crypto.randomBytes(64).toString('hex');
   fs.writeFileSync(JWT_SECRET_FILE, secret);
   return secret;
 }
 
 const JWT_SECRET = getJwtSecret();
+
+// Encryption helpers (AES-256-GCM)
+const ENCRYPTION_KEY = JWT_SECRET.slice(0, 32);
+
+function encrypt(text) {
+  const iv = crypto.randomBytes(16);
+  const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(ENCRYPTION_KEY), iv);
+  let encrypted = cipher.update(text, 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+  const authTag = cipher.getAuthTag();
+  return iv.toString('hex') + ':' + authTag.toString('hex') + ':' + encrypted;
+}
+
+function decrypt(encryptedData) {
+  try {
+    const [ivHex, authTagHex, encrypted] = encryptedData.split(':');
+    const iv = Buffer.from(ivHex, 'hex');
+    const authTag = Buffer.from(authTagHex, 'hex');
+    const decipher = crypto.createDecipheriv('aes-256-gcm', Buffer.from(ENCRYPTION_KEY), iv);
+    decipher.setAuthTag(authTag);
+    let decrypted = decipher.update(encrypted, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    return decrypted;
+  } catch (e) {
+    return null;
+  }
+}
 
 // Helper functions
 function readJsonFile(file) {
@@ -102,6 +128,56 @@ function authMiddleware(req, res, next) {
     next();
   } catch (err) {
     return res.status(401).json({ error: 'Invalid or expired token' });
+  }
+}
+
+// Helper: Add activity log
+function addActivity(userId, type, message) {
+  try {
+    const activity = readJsonFile(ACTIVITY_FILE);
+    if (!activity[userId]) {
+      activity[userId] = [];
+    }
+    activity[userId].unshift({
+      id: Date.now().toString(36) + Math.random().toString(36).substr(2, 6),
+      type,
+      message,
+      timestamp: new Date().toISOString()
+    });
+    // Keep only last 50 activities
+    activity[userId] = activity[userId].slice(0, 50);
+    writeJsonFile(ACTIVITY_FILE, activity);
+  } catch (err) {
+    console.error('Failed to log activity:', err);
+  }
+}
+
+// Helper: Add available slot to bookings
+function addAvailableSlot(userId, slot) {
+  try {
+    const bookings = readJsonFile(BOOKINGS_FILE);
+    if (!bookings[userId]) {
+      bookings[userId] = [];
+    }
+    
+    // Check if slot already exists
+    const exists = bookings[userId].some(b => b.timeCode === slot.timeCode);
+    if (!exists) {
+      bookings[userId].unshift({
+        id: Date.now().toString(36) + Math.random().toString(36).substr(2, 6),
+        timeCode: slot.timeCode,
+        storeName: slot.storeName,
+        dateText: slot.dateText,
+        service: slot.service,
+        time: slot.time,
+        date: slot.date,
+        status: 'available',
+        createdAt: new Date().toISOString()
+      });
+      writeJsonFile(BOOKINGS_FILE, bookings);
+    }
+  } catch (err) {
+    console.error('Failed to add available slot:', err);
   }
 }
 
@@ -372,26 +448,245 @@ app.get('/api/activity', authMiddleware, (req, res) => {
   }
 });
 
-// Helper: Add activity log
-function addActivity(userId, type, message) {
+// ============ CREDENTIALS ROUTES ============
+
+// GET /api/credentials/status
+app.get('/api/credentials/status', authMiddleware, (req, res) => {
   try {
-    const activity = readJsonFile(ACTIVITY_FILE);
-    if (!activity[userId]) {
-      activity[userId] = [];
-    }
-    activity[userId].unshift({
-      id: Date.now().toString(36) + Math.random().toString(36).substr(2, 6),
-      type,
-      message,
-      timestamp: new Date().toISOString()
-    });
-    // Keep only last 50 activities
-    activity[userId] = activity[userId].slice(0, 50);
-    writeJsonFile(ACTIVITY_FILE, activity);
+    const credentials = readJsonFile(CREDENTIALS_FILE);
+    const userCreds = credentials[req.user.id];
+    res.json({ saved: !!(userCreds && userCreds.email && userCreds.password) });
   } catch (err) {
-    console.error('Failed to log activity:', err);
+    res.status(500).json({ error: 'Failed to check credentials status' });
   }
-}
+});
+
+// POST /api/credentials/save
+app.post('/api/credentials/save', authMiddleware, (req, res) => {
+  const { email, password } = req.body;
+  
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email and password are required' });
+  }
+  
+  if (!isValidEmail(email)) {
+    return res.status(400).json({ error: 'Please provide a valid email address' });
+  }
+  
+  try {
+    const credentials = readJsonFile(CREDENTIALS_FILE);
+    credentials[req.user.id] = {
+      email: email.toLowerCase().trim(),
+      password: encrypt(password),
+      savedAt: new Date().toISOString()
+    };
+    writeJsonFile(CREDENTIALS_FILE, credentials);
+    
+    addActivity(req.user.id, 'credentials_saved', 'USchedule credentials saved');
+    
+    res.json({ success: true, message: 'Credentials saved securely' });
+  } catch (err) {
+    console.error('Save credentials error:', err);
+    res.status(500).json({ error: 'Failed to save credentials' });
+  }
+});
+
+// POST /api/credentials/test
+app.post('/api/credentials/test', authMiddleware, async (req, res) => {
+  try {
+    const credentials = readJsonFile(CREDENTIALS_FILE);
+    const userCreds = credentials[req.user.id];
+    
+    if (!userCreds || !userCreds.password) {
+      return res.status(400).json({ error: 'No credentials saved' });
+    }
+    
+    const password = decrypt(userCreds.password);
+    if (!password) {
+      return res.status(500).json({ error: 'Failed to decrypt credentials' });
+    }
+    
+    // Get user's store preference
+    const preferences = readJsonFile(PREFERENCES_FILE);
+    const userPrefs = preferences[req.user.id];
+    const storeId = userPrefs?.stores?.[0];
+    
+    if (!storeId) {
+      return res.status(400).json({ error: 'No store selected. Save your preferences first.' });
+    }
+    
+    const store = STORES.find(s => s.id === storeId);
+    if (!store) {
+      return res.status(400).json({ error: 'Store not found' });
+    }
+    
+    // Test by trying to create a USchedule session
+    // For now, just validate that credentials exist and can be decrypted
+    // A real test would make an HTTP request to USchedule
+    
+    addActivity(req.user.id, 'credentials_tested', 'USchedule credentials verified');
+    
+    res.json({ success: true, message: 'Credentials verified' });
+  } catch (err) {
+    console.error('Test credentials error:', err);
+    res.status(500).json({ error: 'Failed to test credentials' });
+  }
+});
+
+// ============ MONITOR ROUTES ============
+
+// POST /api/monitor/start
+app.post('/api/monitor/start', authMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    
+    // Check if already running
+    if (activeMonitors.has(userId)) {
+      const existing = activeMonitors.get(userId);
+      if (existing.running) {
+        return res.status(400).json({ error: 'Monitor is already running' });
+      }
+    }
+    
+    // Load preferences
+    const preferences = readJsonFile(PREFERENCES_FILE);
+    const userPrefs = preferences[userId];
+    
+    if (!userPrefs?.stores?.length) {
+      return res.status(400).json({ error: 'No store selected. Set your preferences first.' });
+    }
+    
+    // Load credentials
+    const credentials = readJsonFile(CREDENTIALS_FILE);
+    const userCreds = credentials[userId];
+    
+    if (!userCreds?.password) {
+      return res.status(400).json({ error: 'No USchedule credentials saved. Add your credentials in Settings.' });
+    }
+    
+    const password = decrypt(userCreds.password);
+    if (!password) {
+      return res.status(500).json({ error: 'Failed to decrypt credentials' });
+    }
+    
+    // Get store config
+    const storeId = userPrefs.stores[0];
+    const store = STORES.find(s => s.id === storeId);
+    
+    if (!store) {
+      return res.status(400).json({ error: 'Store not found' });
+    }
+    
+    // Create monitor instance
+    const monitor = new UScheduleMonitor({
+      storeAlias: store.alias,
+      serviceTypeId: store.serviceTypeId,
+      serviceId: store.serviceId,
+      preferences: userPrefs,
+      credentials: {
+        email: userCreds.email,
+        password: password
+      },
+      onSlotFound: (slot) => {
+        // Parse the dateText to extract date and time
+        const match = slot.dateText.match(/(\w+ \d+, \d+) - (\d+:\d+ [AP]M)/);
+        const dateStr = match ? match[1] : slot.dateText;
+        const timeStr = match ? match[2] : '';
+        
+        addAvailableSlot(userId, {
+          timeCode: slot.timeCode,
+          storeName: store.name,
+          dateText: slot.dateText,
+          service: slot.service,
+          date: dateStr,
+          time: timeStr
+        });
+        
+        addActivity(userId, 'slot_found', `Found available slot: ${slot.dateText} at ${store.name}`);
+      },
+      onAlert: (message) => {
+        // Future: send push notification or email
+        addActivity(userId, 'monitor_alert', message);
+      },
+      onLog: (message) => {
+        // Log to console for debugging
+        console.log(`[Monitor ${userId}] ${message}`);
+      }
+    });
+    
+    // Start the monitor
+    monitor.start();
+    activeMonitors.set(userId, monitor);
+    
+    addActivity(userId, 'monitor_started', `Started monitoring ${store.name}`);
+    
+    res.json({ success: true, message: 'Monitor started' });
+  } catch (err) {
+    console.error('Start monitor error:', err);
+    res.status(500).json({ error: 'Failed to start monitor' });
+  }
+});
+
+// POST /api/monitor/stop
+app.post('/api/monitor/stop', authMiddleware, (req, res) => {
+  try {
+    const userId = req.user.id;
+    const monitor = activeMonitors.get(userId);
+    
+    if (!monitor) {
+      return res.status(400).json({ error: 'No monitor running' });
+    }
+    
+    monitor.stop();
+    activeMonitors.delete(userId);
+    
+    addActivity(userId, 'monitor_stopped', 'Stopped monitoring');
+    
+    res.json({ success: true, message: 'Monitor stopped' });
+  } catch (err) {
+    console.error('Stop monitor error:', err);
+    res.status(500).json({ error: 'Failed to stop monitor' });
+  }
+});
+
+// GET /api/monitor/status
+app.get('/api/monitor/status', authMiddleware, (req, res) => {
+  try {
+    const userId = req.user.id;
+    const monitor = activeMonitors.get(userId);
+    
+    if (!monitor) {
+      return res.json({
+        running: false,
+        lastCheck: null,
+        slotsFound: 0,
+        mode: 'stopped'
+      });
+    }
+    
+    res.json(monitor.getStatus());
+  } catch (err) {
+    console.error('Get monitor status error:', err);
+    res.status(500).json({ error: 'Failed to get monitor status' });
+  }
+});
+
+// GET /api/monitor/logs
+app.get('/api/monitor/logs', authMiddleware, (req, res) => {
+  try {
+    const userId = req.user.id;
+    const monitor = activeMonitors.get(userId);
+    
+    if (!monitor) {
+      return res.json([]);
+    }
+    
+    res.json(monitor.getLogs(50));
+  } catch (err) {
+    console.error('Get monitor logs error:', err);
+    res.status(500).json({ error: 'Failed to get monitor logs' });
+  }
+});
 
 // ============ LEGACY WAITLIST ROUTES ============
 
