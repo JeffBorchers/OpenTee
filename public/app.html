@@ -867,10 +867,11 @@
     }
     
     .setup-logo {
-      width: 64px;
-      height: 64px;
-      border-radius: 16px;
-      margin-bottom: 20px;
+      width: 120px;
+      height: 120px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     }
     
     .setup-title {
@@ -1125,10 +1126,16 @@
       <p class="setup-subtitle">Let's set up your slot monitor. This takes about 2 minutes.</p>
       
       <div class="setup-steps" id="setup-steps">
-        <div class="setup-step-dot active" data-step="1"></div>
+        <div class="setup-step-dot active" data-step="0"></div>
+        <div class="setup-step-dot" data-step="1"></div>
         <div class="setup-step-dot" data-step="2"></div>
         <div class="setup-step-dot" data-step="3"></div>
         <div class="setup-step-dot" data-step="4"></div>
+      </div>
+      
+      <!-- Step 0: Welcome -->
+      <div class="setup-step" id="setup-step-0" style="display: block;">
+        <button class="btn btn-primary btn-block" id="setup-get-started" style="margin-top: 16px; font-size: 18px; padding: 14px;">Get Started 🏌️</button>
       </div>
       
       <!-- Step 1: Store -->
@@ -1848,8 +1855,8 @@
     let currentSetupStep = 1;
     
     function showSetupStep(step) {
-      document.querySelectorAll('.setup-step').forEach(el => el.classList.add('hidden'));
-      document.getElementById(`setup-step-${step}`).classList.remove('hidden');
+      document.querySelectorAll('.setup-step').forEach(el => el.style.display = 'none');
+      document.getElementById(`setup-step-${step}`).style.display = 'block';
       
       document.querySelectorAll('.setup-step-dot').forEach(dot => {
         const dotStep = parseInt(dot.dataset.step);
@@ -1862,6 +1869,10 @@
     }
     
     // Setup wizard event handlers
+    document.getElementById('setup-get-started').addEventListener('click', () => {
+      showSetupStep(1);
+    });
+    
     document.getElementById('setup-next-1').addEventListener('click', () => {
       const storeId = document.getElementById('setup-store').value;
       if (!storeId) {
