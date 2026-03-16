@@ -544,7 +544,8 @@ app.post('/api/monitor/start', authMiddleware, async (req, res) => {
     if (activeMonitors.has(userId)) {
       const existing = activeMonitors.get(userId);
       if (existing.running) {
-        return res.status(400).json({ error: 'Monitor is already running' });
+        const status = existing.getStatus();
+        return res.json({ success: true, alreadyRunning: true, mode: status.mode, message: 'Monitor is already running' });
       }
     }
     

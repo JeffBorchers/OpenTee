@@ -1543,12 +1543,20 @@
     const tabContents = document.querySelectorAll('.tab-content');
     
     navItems.forEach(item => {
-      item.addEventListener('click', () => {
-        const tab = item.dataset.tab;
+      item.addEventListener('click', (e) => {
+        const btn = e.currentTarget;
+        const tab = btn.dataset.tab;
+        if (!tab) return;
         navItems.forEach(n => n.classList.remove('active'));
         tabContents.forEach(t => t.classList.remove('active'));
-        item.classList.add('active');
-        document.getElementById(`tab-${tab}`).classList.add('active');
+        btn.classList.add('active');
+        const tabEl = document.getElementById(`tab-${tab}`);
+        if (tabEl) tabEl.classList.add('active');
+        
+        // Refresh data when switching tabs
+        if (tab === 'dashboard') loadMonitorStatus();
+        if (tab === 'monitor') { loadPreferences(); loadCredentialsStatus(); }
+        if (tab === 'bookings') loadBookings();
       });
     });
     
@@ -2039,12 +2047,13 @@
           }
         } else {
           const result = await api('/api/monitor/start', { method: 'POST' });
-          if (result?.success) {
-            monitorStatus = { running: true, mode: 'starting' };
+          if (result?.success || result?.error === 'Monitor is already running') {
+            monitorStatus = { running: true, mode: result?.mode || 'starting' };
             updateMonitorUI();
-            showToast('Monitor started!');
-            // Refresh status after a moment
+            showToast(result?.success ? 'Monitor started!' : 'Monitor is running');
+            // Poll status updates
             setTimeout(loadMonitorStatus, 2000);
+            setTimeout(loadMonitorStatus, 5000);
           } else {
             showToast(result?.error || 'Failed to start', true);
           }

@@ -1,7 +1,7 @@
 // OpenTee Service Worker
 // Caches the landing page for offline access
 
-const CACHE_NAME = 'opentee-v3';
+const CACHE_NAME = 'opentee-v4';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
