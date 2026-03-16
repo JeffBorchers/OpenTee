@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="OpenTee Terms of Service - The rules for using our tee time booking software.">
+  <title>Terms of Service - OpenTee</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <meta name="theme-color" content="#1a3a2a">
+  <style>
+    .legal-content {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 120px 24px 80px;
+    }
+    .legal-content h1 {
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .legal-content .last-updated {
+      color: var(--text-subtle);
+      font-size: 14px;
+      margin-bottom: 40px;
+    }
+    .legal-content h2 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-top: 40px;
+      margin-bottom: 16px;
+      color: var(--gold);
+    }
+    .legal-content h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-top: 24px;
+      margin-bottom: 12px;
+    }
+    .legal-content p {
+      color: var(--text-muted);
+      font-size: 16px;
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+    .legal-content ul {
+      margin-bottom: 16px;
+      padding-left: 24px;
+    }
+    .legal-content li {
+      color: var(--text-muted);
+      font-size: 16px;
+      line-height: 1.8;
+      margin-bottom: 8px;
+    }
+    .legal-content a {
+      color: var(--gold);
+      text-decoration: none;
+    }
+    .legal-content a:hover {
+      text-decoration: underline;
+    }
+    .legal-content .highlight-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin: 24px 0;
+    }
+    .legal-content .highlight-box p {
+      margin-bottom: 0;
+    }
+    .legal-content .warning-box {
+      background: rgba(248, 113, 113, 0.1);
+      border: 1px solid rgba(248, 113, 113, 0.3);
+      border-radius: 12px;
+      padding: 24px;
+      margin: 24px 0;
+    }
+    .legal-content .warning-box p {
+      color: #fca5a5;
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="/" class="logo">
+        <img src="/logos/opentee-final-logo.jpg" alt=Borchers Digital LLC ("OpenTee") class="logo-img">
+      </a>
+      <button class="mobile-menu-toggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <div class="nav-links">
+        <a href="/#how-it-works">How It Works</a>
+        <a href="/#features">Features</a>
+        <a href="/#pricing">Pricing</a>
+        <a href="/app.html" class="nav-cta" style="background: rgba(197, 165, 90, 0.2); border-color: rgba(197, 165, 90, 0.4);">
+          Launch App
+        </a>
+        <a href="https://github.com/JeffBorchers/OpenTee" target="_blank" rel="noopener">
+          <svg class="github-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18" style="vertical-align: middle;">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="legal-content">
+    <h1>Terms of Service</h1>
+    <p class="last-updated">Last updated: March 16, 2026</p>
+
+    <div class="highlight-box">
+      <p><strong>The short version:</strong> OpenTee helps you find and book tee times. We don't guarantee you'll get every tee time you want. Play nice, don't abuse the system, and we'll all get along. You can self-host if you want full control.</p>
+    </div>
+
+    <h2>1. Acceptance of Terms</h2>
+    <p>By using OpenTee (the "Service"), you agree to these Terms of Service. If you don't agree, please don't use OpenTee.</p>
+    <p>These terms apply whether you're using our hosted service at opentee.dev or running your own self-hosted instance.</p>
+
+    <h2>2. What OpenTee Does</h2>
+    <p>OpenTee is booking software that helps you:</p>
+    <ul>
+      <li>Monitor tee time and practice bay availability</li>
+      <li>Get notified when slots open up</li>
+      <li>Book tee times and practice bays at participating facilities</li>
+    </ul>
+    <p>We connect to golf courses and practice facilities through their booking systems. We don't own or operate these facilities — we just help you book with them.</p>
+
+    <h2>3. Your Account</h2>
+    <h3>Creating an Account</h3>
+    <p>You'll need an account to use most OpenTee features. You're responsible for:</p>
+    <ul>
+      <li>Providing accurate information</li>
+      <li>Keeping your password secure</li>
+      <li>Everything that happens under your account</li>
+    </ul>
+
+    <h3>Account Security</h3>
+    <p>If you think someone has accessed your account without permission, let us know immediately at <a href="mailto:robertmazaborchers@gmail.com">robertmazaborchers@gmail.com</a>.</p>
+
+    <h2>4. How to Use OpenTee (And How Not To)</h2>
+    <p>We built OpenTee to help golfers book tee times. Please use it that way.</p>
+
+    <h3>Things you can do:</h3>
+    <ul>
+      <li>Monitor and book tee times for yourself and your group</li>
+      <li>Set up notifications for times you genuinely want</li>
+      <li>Self-host OpenTee and modify it for your needs (MIT license)</li>
+      <li>Contribute improvements back to the open-source project</li>
+    </ul>
+
+    <h3>Things you may NOT do:</h3>
+    <ul>
+      <li>Use OpenTee to scalp tee times (book and resell at markup)</li>
+      <li>Book tee times you don't intend to use (hoarding slots)</li>
+      <li>Automate bookings at speeds that could harm booking platforms</li>
+      <li>Scrape, reverse-engineer, or attempt to extract data from booking platforms on our behalf without permission</li>
+      <li>Use the Service to compete with golf courses or booking platforms unfairly</li>
+      <li>Share your account credentials with others</li>
+      <li>Use the Service for anything illegal</li>
+    </ul>
+
+    <div class="warning-box">
+      <p><strong>Important:</strong> We reserve the right to suspend or terminate accounts that violate these terms, especially if your behavior harms golf courses, booking platforms, or other users.</p>
+    </div>
+
+    <h2>5. No Guarantee of Booking Success</h2>
+    <p>Here's the reality: tee times are limited. Other people want them too. OpenTee monitors availability and helps you book quickly, but we cannot guarantee:</p>
+    <ul>
+      <li>You'll get every tee time you want</li>
+      <li>The booking system will always be available</li>
+      <li>Course availability data will always be accurate</li>
+      <li>Your booking will be confirmed (courses can cancel)</li>
+    </ul>
+    <p>OpenTee is a tool, not a promise. Use it to improve your chances, but understand that booking success isn't guaranteed.</p>
+
+    <h2>6. Payments and Refunds</h2>
+    <h3>Subscription Fees</h3>
+    <p>If you subscribe to a paid plan, you'll be billed monthly or annually through Stripe. Prices are shown at signup and may change with 30 days notice.</p>
+
+    <h3>Booking Fees</h3>
+    <p>Some bookings may include fees. These are clearly shown before you confirm a booking.</p>
+
+    <h3>Cancellations and Refunds</h3>
+    <p>Refund policies depend on the golf course or facility. We process refunds according to their policies. For subscription cancellations, you can cancel anytime — your access continues until the end of your billing period.</p>
+
+    <h2>7. Open Source License</h2>
+    <p>OpenTee's source code is available under the <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT License</a>. If you self-host:</p>
+    <ul>
+      <li>You can use, modify, and distribute the code freely</li>
+      <li>You're responsible for your own installation and data</li>
+      <li>The software is provided "as is" without warranty</li>
+      <li>We're not liable for issues with your self-hosted instance</li>
+    </ul>
+    <p>The MIT license terms apply to the source code. These Terms of Service apply to our hosted service at opentee.dev.</p>
+
+    <h2>8. Intellectual Property</h2>
+    <p>The OpenTee name, logo, and branding are owned by OpenTee. You're welcome to use the software, but please don't use our branding to imply endorsement or official connection without permission.</p>
+
+    <h2>9. Limitation of Liability</h2>
+    <p>To the fullest extent permitted by law:</p>
+    <ul>
+      <li>OpenTee is provided "as is" without warranties of any kind</li>
+      <li>We're not liable for indirect, incidental, or consequential damages</li>
+      <li>Our total liability is limited to the amount you paid us in the past 12 months</li>
+      <li>We're not responsible for the actions of golf courses, booking platforms, or third-party services</li>
+    </ul>
+    <p>This doesn't limit liability for things that can't be limited under applicable law.</p>
+
+    <h2>10. Termination</h2>
+    <h3>By You</h3>
+    <p>You can close your account anytime through your account settings or by contacting us. Your data will be deleted within 30 days.</p>
+
+    <h3>By Us</h3>
+    <p>We may suspend or terminate your account if you violate these terms. We'll try to give notice, but immediate termination may happen for serious violations. We may also discontinue the Service with 30 days notice.</p>
+
+    <h2>11. Disputes and Governing Law</h2>
+    <p>These terms are governed by the laws of the State of Michigan, without regard to conflict of law principles. Any disputes will be resolved in the courts of Kent County, Michigan.</p>
+    <p>Before filing a lawsuit, let's try to work it out. Contact us at <a href="mailto:robertmazaborchers@gmail.com">robertmazaborchers@gmail.com</a>.</p>
+
+    <h2>12. Changes to These Terms</h2>
+    <p>We may update these terms. For significant changes, we'll notify you by email or in-app message at least 30 days before they take effect. Continued use after changes means you accept the updated terms.</p>
+
+    <h2>13. Contact</h2>
+    <p>Questions about these terms? Reach out:</p>
+    <ul>
+      <li>Email: <a href="mailto:robertmazaborchers@gmail.com">robertmazaborchers@gmail.com</a></li>
+      <li>GitHub: <a href="https://github.com/JeffBorchers/OpenTee/issues" target="_blank" rel="noopener">Open an issue</a></li>
+    </ul>
+
+    <p style="margin-top: 40px; color: var(--text-subtle); font-size: 14px;">OpenTee · Grand Rapids, Michigan · <a href="https://opentee.dev">opentee.dev</a></p>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <img src="/logos/opentee-final-logo.jpg" alt=Borchers Digital LLC ("OpenTee") class="footer-logo">
+          <p>Your open-source tee time and practice bay booking software.</p>
+        </div>
+        
+        <div class="footer-links">
+          <div class="footer-column">
+            <h4>Product</h4>
+            <a href="/#how-it-works">How It Works</a>
+            <a href="/#features">Features</a>
+            <a href="/#pricing">Pricing</a>
+          </div>
+          <div class="footer-column">
+            <h4>Resources</h4>
+            <a href="https://github.com/JeffBorchers/OpenTee" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://github.com/JeffBorchers/OpenTee/wiki" target="_blank" rel="noopener">Documentation</a>
+            <a href="https://github.com/JeffBorchers/OpenTee/issues" target="_blank" rel="noopener">Support</a>
+          </div>
+          <div class="footer-column">
+            <h4>Legal</h4>
+            <a href="/privacy.html">Privacy Policy</a>
+            <a href="/terms.html">Terms of Service</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>MIT License · <a href="https://github.com/JeffBorchers/OpenTee" target="_blank" rel="noopener">GitHub</a> · Built in Grand Rapids, MI</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile menu toggle
+    const toggle = document.querySelector('.mobile-menu-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    toggle.addEventListener('click', () => {
+      navLinks.classList.toggle('active');
+    });
+  </script>
+</body>
+</html>

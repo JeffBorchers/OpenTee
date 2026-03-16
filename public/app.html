@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="OpenTee - Your tee time monitoring dashboard">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>OpenTee</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1a3a2a">
+  <style>
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    body {
+      padding-bottom: 80px;
+      background: linear-gradient(135deg, #1a3a2a 0%, #0f2419 100%);
+      min-height: 100vh;
+    }
+    
+    /* App Header */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(26, 58, 42, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(197, 165, 90, 0.2);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .app-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .app-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+    }
+    
+    .app-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+    
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.7);
+    }
+    
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4ade80;
+    }
+    
+    .status-dot.inactive {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(26, 58, 42, 0.98);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(197, 165, 90, 0.2);
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 0;
+      padding-bottom: max(8px, env(safe-area-inset-bottom));
+    }
+    
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 16px;
+      color: rgba(255, 255, 255, 0.5);
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+    
+    .nav-item svg {
+      width: 24px;
+      height: 24px;
+      transition: all 0.2s ease;
+    }
+    
+    .nav-item.active {
+      color: #C5A55A;
+    }
+    
+    .nav-item.active svg {
+      stroke: #C5A55A;
+    }
+    
+    /* Tab Content */
+    .tab-content {
+      display: none;
+      padding: 20px;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Cards */
+    .card {
+      background: rgba(45, 90, 63, 0.2);
+      border: 1px solid rgba(197, 165, 90, 0.2);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+    
+    .card-badge {
+      background: rgba(74, 222, 128, 0.2);
+      color: #4ade80;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .card-badge.inactive {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.5);
+    }
+    
+    /* Dashboard */
+    .welcome-section {
+      margin-bottom: 24px;
+    }
+    
+    .welcome-text {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    
+    .welcome-subtext {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 14px;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .stat-card {
+      background: rgba(45, 90, 63, 0.3);
+      border: 1px solid rgba(197, 165, 90, 0.15);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 28px;
+      font-weight: 800;
+      color: #C5A55A;
+    }
+    
+    .stat-label {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-top: 4px;
+    }
+    
+    .upcoming-booking {
+      background: linear-gradient(135deg, rgba(197, 165, 90, 0.15) 0%, rgba(45, 90, 63, 0.3) 100%);
+      border: 1px solid rgba(197, 165, 90, 0.3);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
+    .booking-date {
+      text-align: center;
+      min-width: 56px;
+    }
+    
+    .booking-day {
+      font-size: 24px;
+      font-weight: 800;
+      color: #C5A55A;
+    }
+    
+    .booking-month {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.6);
+      text-transform: uppercase;
+    }
+    
+    .booking-details h4 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    
+    .booking-details p {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .no-bookings {
+      text-align: center;
+      padding: 32px 20px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .no-bookings svg {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 12px;
+      opacity: 0.3;
+    }
+    
+    /* Activity Feed */
+    .activity-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .activity-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+    
+    .activity-icon {
+      width: 32px;
+      height: 32px;
+      background: rgba(197, 165, 90, 0.2);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .activity-icon svg {
+      width: 16px;
+      height: 16px;
+      stroke: #C5A55A;
+    }
+    
+    .activity-content {
+      flex: 1;
+    }
+    
+    .activity-message {
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+    
+    .activity-time {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.4);
+    }
+    
+    /* Monitor Setup */
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    
+    .form-group {
+      margin-bottom: 24px;
+    }
+    
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 10px;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .form-select {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 15px;
+      font-family: inherit;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(197, 165, 90, 0.2);
+      border-radius: 8px;
+      color: #fff;
+      outline: none;
+      cursor: pointer;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.5)' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+    }
+    
+    .form-select:focus {
+      border-color: #C5A55A;
+    }
+    
+    .form-select option {
+      background: #1a3a2a;
+      color: #fff;
+    }
+    
+    /* Day/Time Grid */
+    .day-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    
+    .day-btn {
+      padding: 10px 4px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(197, 165, 90, 0.2);
+      border-radius: 8px;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .day-btn.active {
+      background: rgba(197, 165, 90, 0.2);
+      border-color: #C5A55A;
+      color: #C5A55A;
+    }
+    
+    .time-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    
+    .time-btn {
+      padding: 10px 8px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(197, 165, 90, 0.2);
+      border-radius: 8px;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+    
+    .time-btn.active {
+      background: rgba(197, 165, 90, 0.2);
+      border-color: #C5A55A;
+      color: #C5A55A;
+    }
+    
+    /* Toggle */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+    
+    .toggle-label {
+      font-size: 14px;
+    }
+    
+    .toggle-switch {
+      position: relative;
+      width: 48px;
+      height: 28px;
+    }
+    
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 28px;
+      transition: 0.3s;
+    }
+    
+    .toggle-slider::before {
+      position: absolute;
+      content: "";
+      height: 22px;
+      width: 22px;
+      left: 3px;
+      bottom: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+    
+    .toggle-switch input:checked + .toggle-slider {
+      background: #C5A55A;
+    }
+    
+    .toggle-switch input:checked + .toggle-slider::before {
+      transform: translateX(20px);
+    }
+    
+    /* Alert Method */
+    .alert-options {
+      display: flex;
+      gap: 12px;
+    }
+    
+    .alert-option {
+      flex: 1;
+      padding: 14px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(197, 165, 90, 0.2);
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .alert-option.active {
+      background: rgba(197, 165, 90, 0.2);
+      border-color: #C5A55A;
+      color: #C5A55A;
+    }
+    
+    /* Bookings Tab */
+    .booking-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    
+    .booking-tab-btn {
+      flex: 1;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(197, 165, 90, 0.2);
+      border-radius: 8px;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .booking-tab-btn.active {
+      background: rgba(197, 165, 90, 0.2);
+      border-color: #C5A55A;
+      color: #C5A55A;
+    }
+    
+    .booking-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .booking-card {
+      background: rgba(45, 90, 63, 0.3);
+      border: 1px solid rgba(197, 165, 90, 0.15);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    
+    .booking-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    
+    .booking-store {
+      font-size: 15px;
+      font-weight: 600;
+    }
+    
+    .booking-status {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    
+    .booking-status.confirmed {
+      background: rgba(74, 222, 128, 0.2);
+      color: #4ade80;
+    }
+    
+    .booking-status.cancelled {
+      background: rgba(248, 113, 113, 0.2);
+      color: #f87171;
+    }
+    
+    .booking-status.completed {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .booking-card-details {
+      display: flex;
+      gap: 20px;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 12px;
+    }
+    
+    .booking-card-detail {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .booking-card-detail svg {
+      width: 14px;
+      height: 14px;
+    }
+    
+    .cancel-btn {
+      padding: 8px 16px;
+      background: rgba(248, 113, 113, 0.1);
+      border: 1px solid rgba(248, 113, 113, 0.2);
+      border-radius: 6px;
+      color: #f87171;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .cancel-btn:hover {
+      background: rgba(248, 113, 113, 0.2);
+    }
+    
+    /* Settings */
+    .settings-section {
+      margin-bottom: 24px;
+    }
+    
+    .settings-title {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: rgba(255, 255, 255, 0.4);
+      margin-bottom: 12px;
+    }
+    
+    .settings-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    
+    .settings-item-label {
+      font-size: 14px;
+    }
+    
+    .settings-item-value {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .tier-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: rgba(197, 165, 90, 0.2);
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #C5A55A;
+    }
+    
+    .tier-badge.pro {
+      background: linear-gradient(135deg, rgba(197, 165, 90, 0.3) 0%, rgba(197, 165, 90, 0.1) 100%);
+    }
+    
+    .logout-btn {
+      width: 100%;
+      padding: 14px;
+      background: rgba(248, 113, 113, 0.1);
+      border: 1px solid rgba(248, 113, 113, 0.2);
+      border-radius: 8px;
+      color: #f87171;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 24px;
+    }
+    
+    .logout-btn:hover {
+      background: rgba(248, 113, 113, 0.2);
+    }
+    
+    .app-version {
+      text-align: center;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.3);
+      margin-top: 16px;
+    }
+    
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: rgba(74, 222, 128, 0.9);
+      color: #0f2419;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 1000;
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+    
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+    
+    .toast.error {
+      background: rgba(248, 113, 113, 0.9);
+      color: #fff;
+    }
+    
+    /* Loading State */
+    .loading-spinner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+    
+    .loading-spinner::after {
+      content: '';
+      width: 32px;
+      height: 32px;
+      border: 3px solid rgba(197, 165, 90, 0.2);
+      border-top-color: #C5A55A;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Confirm Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .modal-overlay.show {
+      display: flex;
+    }
+    
+    .modal-content {
+      background: #1a3a2a;
+      border: 1px solid rgba(197, 165, 90, 0.2);
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 320px;
+      width: 100%;
+      text-align: center;
+    }
+    
+    .modal-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    
+    .modal-text {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+    
+    .modal-buttons {
+      display: flex;
+      gap: 12px;
+    }
+    
+    .modal-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .modal-btn-cancel {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(197, 165, 90, 0.2);
+      color: rgba(255, 255, 255, 0.7);
+    }
+    
+    .modal-btn-confirm {
+      background: rgba(248, 113, 113, 0.2);
+      border: 1px solid rgba(248, 113, 113, 0.3);
+      color: #f87171;
+    }
+  </style>
+</head>
+<body>
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="app-header-left">
+      <img src="/logos/opentee-final-logo.jpg" alt="OpenTee" class="app-logo">
+      <span class="app-title">OpenTee</span>
+    </div>
+    <div class="status-indicator">
+      <span class="status-dot" id="status-dot"></span>
+      <span id="status-text">Monitoring</span>
+    </div>
+  </header>
+
+  <!-- Tab: Dashboard -->
+  <div class="tab-content active" id="tab-dashboard">
+    <div class="welcome-section">
+      <h1 class="welcome-text">Hello, <span id="user-name">User</span></h1>
+      <p class="welcome-subtext">Here's your tee time overview</p>
+    </div>
+    
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value" id="stat-bookings">0</div>
+        <div class="stat-label">Total Bookings</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-monitors">0</div>
+        <div class="stat-label">Active Monitors</div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Next Booking</h3>
+      </div>
+      <div id="next-booking">
+        <div class="no-bookings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/>
+          </svg>
+          <p>No upcoming bookings</p>
+          <p style="font-size: 12px; margin-top: 4px;">Set up monitors to get notified</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Recent Activity</h3>
+      </div>
+      <div id="activity-feed" class="activity-list">
+        <div class="no-bookings" style="padding: 16px;">
+          <p>No recent activity</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Monitor Setup -->
+  <div class="tab-content" id="tab-monitor">
+    <h2 class="section-title">Monitor Setup</h2>
+    
+    <div class="form-group">
+      <label class="form-label">Select Store</label>
+      <select class="form-select" id="store-select">
+        <option value="">Choose a store...</option>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">Preferred Days</label>
+      <div class="day-grid">
+        <button type="button" class="day-btn" data-day="mon">Mon</button>
+        <button type="button" class="day-btn" data-day="tue">Tue</button>
+        <button type="button" class="day-btn" data-day="wed">Wed</button>
+        <button type="button" class="day-btn" data-day="thu">Thu</button>
+        <button type="button" class="day-btn" data-day="fri">Fri</button>
+        <button type="button" class="day-btn" data-day="sat">Sat</button>
+        <button type="button" class="day-btn" data-day="sun">Sun</button>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">Preferred Times</label>
+      <div class="time-grid">
+        <button type="button" class="time-btn" data-time="6am">6 AM</button>
+        <button type="button" class="time-btn" data-time="7am">7 AM</button>
+        <button type="button" class="time-btn" data-time="8am">8 AM</button>
+        <button type="button" class="time-btn" data-time="9am">9 AM</button>
+        <button type="button" class="time-btn" data-time="10am">10 AM</button>
+        <button type="button" class="time-btn" data-time="11am">11 AM</button>
+        <button type="button" class="time-btn" data-time="12pm">12 PM</button>
+        <button type="button" class="time-btn" data-time="1pm">1 PM</button>
+        <button type="button" class="time-btn" data-time="2pm">2 PM</button>
+        <button type="button" class="time-btn" data-time="3pm">3 PM</button>
+        <button type="button" class="time-btn" data-time="4pm">4 PM</button>
+        <button type="button" class="time-btn" data-time="5pm">5 PM</button>
+        <button type="button" class="time-btn" data-time="6pm">6 PM</button>
+        <button type="button" class="time-btn" data-time="7pm">7 PM</button>
+        <button type="button" class="time-btn" data-time="8pm">8 PM</button>
+        <button type="button" class="time-btn" data-time="9pm">9 PM</button>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <div class="toggle-row">
+        <span class="toggle-label">Back-to-back slots (2 hours)</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="back-to-back">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">Alert Method</label>
+      <div class="alert-options">
+        <div class="alert-option" data-method="push">Push</div>
+        <div class="alert-option active" data-method="email">Email</div>
+        <div class="alert-option" data-method="both">Both</div>
+      </div>
+    </div>
+    
+    <button class="btn btn-primary btn-block" id="save-preferences">Save Preferences</button>
+  </div>
+
+  <!-- Tab: Bookings -->
+  <div class="tab-content" id="tab-bookings">
+    <h2 class="section-title">Bookings</h2>
+    
+    <div class="booking-tabs">
+      <button class="booking-tab-btn active" data-tab="upcoming">Upcoming</button>
+      <button class="booking-tab-btn" data-tab="past">Past</button>
+    </div>
+    
+    <div id="bookings-list" class="booking-list">
+      <div class="no-bookings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/>
+        </svg>
+        <p>No bookings yet</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Settings -->
+  <div class="tab-content" id="tab-settings">
+    <h2 class="section-title">Settings</h2>
+    
+    <div class="settings-section">
+      <h3 class="settings-title">Account</h3>
+      <div class="settings-item">
+        <span class="settings-item-label">Email</span>
+        <span class="settings-item-value" id="settings-email">-</span>
+      </div>
+      <div class="settings-item">
+        <span class="settings-item-label">Password</span>
+        <span class="settings-item-value">••••••••</span>
+      </div>
+    </div>
+    
+    <div class="settings-section">
+      <h3 class="settings-title">Subscription</h3>
+      <div class="settings-item">
+        <span class="settings-item-label">Plan</span>
+        <span class="tier-badge" id="settings-tier">Free</span>
+      </div>
+    </div>
+    
+    <div class="settings-section">
+      <h3 class="settings-title">Notifications</h3>
+      <div class="toggle-row">
+        <span class="toggle-label">Push Notifications</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="notify-push">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <span class="toggle-label">Email Alerts</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="notify-email" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+    
+    <button class="logout-btn" id="logout-btn">Log Out</button>
+    
+    <p class="app-version">OpenTee v1.0.0</p>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-tab="dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/>
+      </svg>
+      <span>Home</span>
+    </button>
+    <button class="nav-item" data-tab="monitor">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/>
+      </svg>
+      <span>Monitor</span>
+    </button>
+    <button class="nav-item" data-tab="bookings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/>
+      </svg>
+      <span>Bookings</span>
+    </button>
+    <button class="nav-item" data-tab="settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.356-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/>
+        <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+      </svg>
+      <span>Settings</span>
+    </button>
+  </nav>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal-content">
+      <h3 class="modal-title">Cancel Booking?</h3>
+      <p class="modal-text">Are you sure you want to cancel this booking? This action cannot be undone.</p>
+      <div class="modal-buttons">
+        <button class="modal-btn modal-btn-cancel" id="modal-cancel">Keep It</button>
+        <button class="modal-btn modal-btn-confirm" id="modal-confirm">Cancel Booking</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Auth check
+    const token = localStorage.getItem('opentee_token');
+    if (!token) {
+      window.location.href = '/login.html';
+    }
+    
+    // API helper
+    async function api(endpoint, options = {}) {
+      const res = await fetch(endpoint, {
+        ...options,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+          ...options.headers
+        }
+      });
+      if (res.status === 401) {
+        localStorage.removeItem('opentee_token');
+        localStorage.removeItem('opentee_user');
+        window.location.href = '/login.html';
+        return null;
+      }
+      return res.json();
+    }
+    
+    // Toast helper
+    function showToast(message, isError = false) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = 'toast' + (isError ? ' error' : '');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+    
+    // Tab navigation
+    const navItems = document.querySelectorAll('.nav-item');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const tab = item.dataset.tab;
+        navItems.forEach(n => n.classList.remove('active'));
+        tabContents.forEach(t => t.classList.remove('active'));
+        item.classList.add('active');
+        document.getElementById(`tab-${tab}`).classList.add('active');
+      });
+    });
+    
+    // Load user data
+    let currentUser = null;
+    let stores = [];
+    let preferences = {};
+    let bookings = [];
+    let activities = [];
+    
+    async function loadUserData() {
+      try {
+        const user = await api('/api/auth/me');
+        if (!user) return;
+        currentUser = user;
+        
+        document.getElementById('user-name').textContent = user.name || 'User';
+        document.getElementById('settings-email').textContent = user.email;
+        document.getElementById('settings-tier').textContent = user.tier === 'pro' ? 'Pro' : 'Free';
+      } catch (err) {
+        console.error('Failed to load user:', err);
+      }
+    }
+    
+    async function loadStores() {
+      try {
+        stores = await api('/api/stores');
+        const select = document.getElementById('store-select');
+        stores.forEach(store => {
+          const option = document.createElement('option');
+          option.value = store.id;
+          option.textContent = `${store.name} - ${store.address}`;
+          select.appendChild(option);
+        });
+      } catch (err) {
+        console.error('Failed to load stores:', err);
+      }
+    }
+    
+    async function loadPreferences() {
+      try {
+        preferences = await api('/api/preferences') || {};
+        
+        // Update UI
+        if (preferences.stores && preferences.stores.length > 0) {
+          document.getElementById('store-select').value = preferences.stores[0];
+        }
+        
+        if (preferences.days) {
+          document.querySelectorAll('.day-btn').forEach(btn => {
+            if (preferences.days.includes(btn.dataset.day)) {
+              btn.classList.add('active');
+            }
+          });
+        }
+        
+        if (preferences.times) {
+          document.querySelectorAll('.time-btn').forEach(btn => {
+            if (preferences.times.includes(btn.dataset.time)) {
+              btn.classList.add('active');
+            }
+          });
+        }
+        
+        document.getElementById('back-to-back').checked = preferences.backToBack || false;
+        
+        document.querySelectorAll('.alert-option').forEach(opt => {
+          opt.classList.toggle('active', opt.dataset.method === (preferences.alertMethod || 'email'));
+        });
+        
+        updateMonitoringStatus();
+      } catch (err) {
+        console.error('Failed to load preferences:', err);
+      }
+    }
+    
+    async function loadBookings() {
+      try {
+        bookings = await api('/api/bookings') || [];
+        renderBookings('upcoming');
+        
+        // Update stats
+        const upcoming = bookings.filter(b => b.status !== 'cancelled' && new Date(b.date) >= new Date());
+        document.getElementById('stat-bookings').textContent = bookings.length;
+        
+        // Next booking
+        if (upcoming.length > 0) {
+          const next = upcoming.sort((a, b) => new Date(a.date) - new Date(b.date))[0];
+          const date = new Date(next.date);
+          document.getElementById('next-booking').innerHTML = `
+            <div class="upcoming-booking">
+              <div class="booking-date">
+                <div class="booking-day">${date.getDate()}</div>
+                <div class="booking-month">${date.toLocaleString('default', { month: 'short' })}</div>
+              </div>
+              <div class="booking-details">
+                <h4>${next.storeName}</h4>
+                <p>${next.time} • Bay ${next.bay || 'TBD'}</p>
+              </div>
+            </div>
+          `;
+        }
+      } catch (err) {
+        console.error('Failed to load bookings:', err);
+      }
+    }
+    
+    async function loadActivity() {
+      try {
+        activities = await api('/api/activity') || [];
+        renderActivity();
+      } catch (err) {
+        console.error('Failed to load activity:', err);
+      }
+    }
+    
+    function renderBookings(tab) {
+      const now = new Date();
+      let filtered = bookings;
+      
+      if (tab === 'upcoming') {
+        filtered = bookings.filter(b => b.status !== 'cancelled' && new Date(b.date) >= now);
+      } else {
+        filtered = bookings.filter(b => b.status === 'cancelled' || new Date(b.date) < now);
+      }
+      
+      const list = document.getElementById('bookings-list');
+      
+      if (filtered.length === 0) {
+        list.innerHTML = `
+          <div class="no-bookings">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/>
+            </svg>
+            <p>No ${tab} bookings</p>
+          </div>
+        `;
+        return;
+      }
+      
+      list.innerHTML = filtered.map(booking => {
+        const date = new Date(booking.date);
+        const statusClass = booking.status === 'cancelled' ? 'cancelled' : 
+                           date < now ? 'completed' : 'confirmed';
+        const statusText = booking.status === 'cancelled' ? 'Cancelled' : 
+                          date < now ? 'Completed' : 'Confirmed';
+        
+        return `
+          <div class="booking-card">
+            <div class="booking-card-header">
+              <span class="booking-store">${booking.storeName}</span>
+              <span class="booking-status ${statusClass}">${statusText}</span>
+            </div>
+            <div class="booking-card-details">
+              <div class="booking-card-detail">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25"/>
+                </svg>
+                <span>${date.toLocaleDateString()}</span>
+              </div>
+              <div class="booking-card-detail">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span>${booking.time}</span>
+              </div>
+            </div>
+            ${statusClass === 'confirmed' ? `
+              <button class="cancel-btn" data-id="${booking.id}">Cancel Booking</button>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+      
+      // Add cancel handlers
+      list.querySelectorAll('.cancel-btn').forEach(btn => {
+        btn.addEventListener('click', () => showCancelModal(btn.dataset.id));
+      });
+    }
+    
+    function renderActivity() {
+      const feed = document.getElementById('activity-feed');
+      
+      if (activities.length === 0) {
+        feed.innerHTML = `
+          <div class="no-bookings" style="padding: 16px;">
+            <p>No recent activity</p>
+          </div>
+        `;
+        return;
+      }
+      
+      feed.innerHTML = activities.slice(0, 5).map(activity => {
+        const timeAgo = getTimeAgo(activity.timestamp);
+        return `
+          <div class="activity-item">
+            <div class="activity-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/>
+              </svg>
+            </div>
+            <div class="activity-content">
+              <div class="activity-message">${activity.message}</div>
+              <div class="activity-time">${timeAgo}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+    
+    function getTimeAgo(timestamp) {
+      const seconds = Math.floor((new Date() - new Date(timestamp)) / 1000);
+      if (seconds < 60) return 'Just now';
+      const minutes = Math.floor(seconds / 60);
+      if (minutes < 60) return `${minutes}m ago`;
+      const hours = Math.floor(minutes / 60);
+      if (hours < 24) return `${hours}h ago`;
+      const days = Math.floor(hours / 24);
+      return `${days}d ago`;
+    }
+    
+    function updateMonitoringStatus() {
+      const hasPreferences = preferences.stores && preferences.stores.length > 0;
+      const dot = document.getElementById('status-dot');
+      const text = document.getElementById('status-text');
+      
+      dot.classList.toggle('inactive', !hasPreferences);
+      text.textContent = hasPreferences ? 'Monitoring' : 'Inactive';
+      
+      document.getElementById('stat-monitors').textContent = hasPreferences ? preferences.stores.length : 0;
+    }
+    
+    // Day/Time button toggles
+    document.querySelectorAll('.day-btn, .time-btn').forEach(btn => {
+      btn.addEventListener('click', () => btn.classList.toggle('active'));
+    });
+    
+    // Alert options
+    document.querySelectorAll('.alert-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        document.querySelectorAll('.alert-option').forEach(o => o.classList.remove('active'));
+        opt.classList.add('active');
+      });
+    });
+    
+    // Booking tabs
+    document.querySelectorAll('.booking-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.booking-tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderBookings(btn.dataset.tab);
+      });
+    });
+    
+    // Save preferences
+    document.getElementById('save-preferences').addEventListener('click', async () => {
+      const storeId = document.getElementById('store-select').value;
+      const days = [...document.querySelectorAll('.day-btn.active')].map(b => b.dataset.day);
+      const times = [...document.querySelectorAll('.time-btn.active')].map(b => b.dataset.time);
+      const backToBack = document.getElementById('back-to-back').checked;
+      const alertMethod = document.querySelector('.alert-option.active').dataset.method;
+      
+      if (!storeId) {
+        showToast('Please select a store', true);
+        return;
+      }
+      
+      if (days.length === 0) {
+        showToast('Please select at least one day', true);
+        return;
+      }
+      
+      if (times.length === 0) {
+        showToast('Please select at least one time', true);
+        return;
+      }
+      
+      const btn = document.getElementById('save-preferences');
+      btn.disabled = true;
+      btn.textContent = 'Saving...';
+      
+      try {
+        const result = await api('/api/preferences', {
+          method: 'POST',
+          body: JSON.stringify({
+            stores: [storeId],
+            days,
+            times,
+            backToBack,
+            alertMethod
+          })
+        });
+        
+        if (result && result.success) {
+          preferences = { stores: [storeId], days, times, backToBack, alertMethod };
+          updateMonitoringStatus();
+          showToast('Preferences saved!');
+        } else {
+          showToast(result?.error || 'Failed to save', true);
+        }
+      } catch (err) {
+        showToast('Connection error', true);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Save Preferences';
+      }
+    });
+    
+    // Cancel modal
+    let cancelBookingId = null;
+    
+    function showCancelModal(bookingId) {
+      cancelBookingId = bookingId;
+      document.getElementById('modal').classList.add('show');
+    }
+    
+    document.getElementById('modal-cancel').addEventListener('click', () => {
+      document.getElementById('modal').classList.remove('show');
+      cancelBookingId = null;
+    });
+    
+    document.getElementById('modal-confirm').addEventListener('click', async () => {
+      if (!cancelBookingId) return;
+      
+      try {
+        const result = await api(`/api/bookings/${cancelBookingId}/cancel`, { method: 'POST' });
+        if (result && result.success) {
+          showToast('Booking cancelled');
+          loadBookings();
+          loadActivity();
+        } else {
+          showToast(result?.error || 'Failed to cancel', true);
+        }
+      } catch (err) {
+        showToast('Connection error', true);
+      }
+      
+      document.getElementById('modal').classList.remove('show');
+      cancelBookingId = null;
+    });
+    
+    // Logout
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      localStorage.removeItem('opentee_token');
+      localStorage.removeItem('opentee_user');
+      window.location.href = '/login.html';
+    });
+    
+    // Initial load
+    loadUserData();
+    loadStores();
+    loadPreferences();
+    loadBookings();
+    loadActivity();
+  </script>
+</body>
+</html>
